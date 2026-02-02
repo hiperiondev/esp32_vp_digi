@@ -23,28 +23,13 @@
  *
  */
 
-#include "systick.h"
-#include "system_port.h"
-#include "vp_digi_options.h"
+#ifndef FILESYSTEM_PORT_H_
+#define FILESYSTEM_PORT_H_
 
-volatile uint32_t ticks = 0; // SysTick counter
+#include <stdint.h>
 
-// with HAL enabled, the handler is in stm32f1xx_it.c
-// void SysTick_Handler(void)
-//{
-// ticks++;
-//}
+void write(uint32_t address, uint16_t data);
+uint16_t read(uint32_t address);
+void erase(void);
 
-void SysTickInit(void) {
-    SysTickInit_port();
-}
-
-uint32_t SysTickGet(void) {
-    return SysTickGet_port();
-}
-
-void Delay(uint32_t ms) {
-    uint32_t target = SysTickGet() + ms / SYSTICK_INTERVAL;
-    while (target > SysTickGet())
-        ;
-}
+#endif /* FILESYSTEM_PORT_H_ */

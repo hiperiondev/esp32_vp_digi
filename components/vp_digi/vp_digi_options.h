@@ -26,6 +26,6 @@
 #ifndef VP_DIGI_OPTIONS_H_
 #define VP_DIGI_OPTIONS_H_
 
-#define ENABLE_FX25
+//#define ENABLE_FX25
 
 #endif /* DIGI_OPTIONS_H_ */

@@ -23,28 +23,25 @@
  *
  */
 
-#include "systick.h"
-#include "system_port.h"
-#include "vp_digi_options.h"
+#include <stdint.h>
 
-volatile uint32_t ticks = 0; // SysTick counter
-
-// with HAL enabled, the handler is in stm32f1xx_it.c
-// void SysTick_Handler(void)
-//{
-// ticks++;
-//}
-
-void SysTickInit(void) {
-    SysTickInit_port();
+/**
+ * @brief Write word to configuration part in flash
+ * @param[in] address Relative address
+ * @param[in] data Data to write
+ * @warning Flash must be unlocked first
+ */
+void write(uint32_t address, uint16_t data) {
 }
 
-uint32_t SysTickGet(void) {
-    return SysTickGet_port();
+/**
+ * @brief Read single word from configuration part in flash
+ * @param[in] address Relative address
+ * @return Data (word)
+ */
+uint16_t read(uint32_t address) {
+    return 0;
 }
 
-void Delay(uint32_t ms) {
-    uint32_t target = SysTickGet() + ms / SYSTICK_INTERVAL;
-    while (target > SysTickGet())
-        ;
+void erase(void) {
 }

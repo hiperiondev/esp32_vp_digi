@@ -22,29 +22,12 @@
  * Boston, MA 02110-1301, USA.
  *
  */
+ 
+ #include <stdint.h>
 
-#include "systick.h"
-#include "system_port.h"
-#include "vp_digi_options.h"
-
-volatile uint32_t ticks = 0; // SysTick counter
-
-// with HAL enabled, the handler is in stm32f1xx_it.c
-// void SysTick_Handler(void)
-//{
-// ticks++;
-//}
-
-void SysTickInit(void) {
-    SysTickInit_port();
+void SysTickInit_port(void) {
 }
 
-uint32_t SysTickGet(void) {
-    return SysTickGet_port();
-}
-
-void Delay(uint32_t ms) {
-    uint32_t target = SysTickGet() + ms / SYSTICK_INTERVAL;
-    while (target > SysTickGet())
-        ;
+uint32_t SysTickGet_port(void) {
+	return 1;
 }

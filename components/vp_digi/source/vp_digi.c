@@ -28,6 +28,7 @@
 
 #include "vp_digi.h"
 #include "vp_digi_options.h"
+#include "system_port.h"
 
 #ifdef ENABLE_FX25
 #include "fx25.h"

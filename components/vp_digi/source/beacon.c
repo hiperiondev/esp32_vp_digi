@@ -32,6 +32,7 @@
 #include "digipeater.h"
 #include "terminal.h"
 #include "vp_digi_options.h"
+#include "system_port.h"
 
 struct Beacon beacon[8];
 

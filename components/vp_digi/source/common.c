@@ -27,6 +27,7 @@
 #include <string.h>
 
 #include "common.h"
+#include "system_port.h"
 #include "vp_digi_options.h"
 
 struct _GeneralConfig GeneralConfig = {

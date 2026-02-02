@@ -30,11 +30,9 @@
 #include "ax25.h"
 #include "common.h"
 #include "modem.h"
+#include "system_port.h"
 #include "systick.h"
 #include "vp_digi_options.h"
-
-#define __enable_irq()
-#define __disable_irq()
 
 struct Ax25ProtoConfig Ax25Config;
 
@@ -96,8 +94,7 @@ enum TxStage {
     TX_STAGE_TAIL,
 
 #ifdef ENABLE_FX25
-    // stages used in FX.25 mode additionally
-    TX_STAGE_CORRELATION_TAG,
+    TX_STAGE_CORRELATION_TAG, // stages used in FX.25 mode additionally
 #endif
 };
 
@@ -479,8 +476,7 @@ void Ax25BitParse(uint8_t bit, uint8_t modem) {
     if (rx->rx != RX_STAGE_FX25_FRAME) {
 #endif
 
-        if (rx->rawData == 0x7E) // HDLC flag received
-        {
+        if (rx->rawData == 0x7E) {        // HDLC flag received
             if (rx->rx == RX_STAGE_FRAME) // if we are in frame, this is the end
                                           // of the frame
             {

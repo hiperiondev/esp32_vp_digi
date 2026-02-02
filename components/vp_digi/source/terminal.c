@@ -35,6 +35,7 @@
 #include "systick.h"
 #include "terminal.h"
 #include "vp_digi_options.h"
+#include "system_port.h"
 
 void TermHandleSpecial(Uart *u) {
     if (u->mode == MODE_KISS) // don't do anything in KISS mode
@@ -479,13 +480,13 @@ void TermParse(Uart *src) {
         sendTime(src);
         return;
     } else if (!strncmp(cmd, "reboot", 6)) {
-        // NVIC_SystemReset();
+        NVIC_SystemReset();
     } else if (!strncmp(cmd, "save", 4)) {
         ConfigWrite();
-        // NVIC_SystemReset();
+        NVIC_SystemReset();
     } else if (!strncmp(cmd, "eraseall", 8)) {
         ConfigErase();
-        // NVIC_SystemReset();
+        NVIC_SystemReset();
     } else if (!strncmp(cmd, "print", 5)) {
         printConfig(src);
         return;

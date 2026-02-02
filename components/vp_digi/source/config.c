@@ -30,13 +30,11 @@
 #include "common.h"
 #include "config.h"
 #include "digipeater.h"
+#include "filesystem_port.h"
 #include "modem.h"
 #include "uart.h"
 #include "vp_digi_options.h"
-
-#define CONFIG_ADDRESS    0x800F000
-#define CONFIG_PAGE_COUNT 2
-#define CONFIG_PAGE_SIZE  1024 // 1024 words (2048 bytes)
+#include "system_port.h"
 
 #define CONFIG_FLAG_WRITTEN 0x6B
 
@@ -110,28 +108,6 @@
 #define CONFIG_XXX           1226 // next address (not used)
 
 /**
- * @brief Write word to configuration part in flash
- * @param[in] address Relative address
- * @param[in] data Data to write
- * @warning Flash must be unlocked first
- */
-static void write(uint32_t address, uint16_t data) {
-    /*
-    FLASH->CR |= FLASH_CR_PG; // programming mode
-
-    *((volatile uint16_t *)(address + CONFIG_ADDRESS)) = data; // store data
-
-    while (FLASH->SR & FLASH_SR_BSY)
-            ;
-    ;								 // wait for completion
-    if (!(FLASH->SR & FLASH_SR_EOP)) // an error occurred
-            FLASH->CR &= ~FLASH_CR_PG;
-    else
-            FLASH->SR |= FLASH_SR_EOP;
-    */
-}
-
-/**
  * @brief Write data array to configuration part in flash
  * @param[in] address Relative address
  * @param[in] *data Data to write
@@ -148,15 +124,6 @@ static void writeString(uint32_t address, uint8_t *data, uint16_t len) {
         write(address + (i << 1),
               *(data + (i << 1))); // store last byte if number of bytes is odd
     }
-}
-
-/**
- * @brief Read single word from configuration part in flash
- * @param[in] address Relative address
- * @return Data (word)
- */
-static uint16_t read(uint32_t address) {
-    return *(volatile uint16_t *)((address + CONFIG_ADDRESS));
 }
 
 /**
@@ -177,25 +144,7 @@ static void readString(uint32_t address, uint8_t *data, uint16_t len) {
 }
 
 void ConfigErase(void) {
-    /*
-    FLASH->KEYR = 0x45670123; // unlock memory
-    FLASH->KEYR = 0xCDEF89AB;
-    while (FLASH->SR & FLASH_SR_BSY)
-            ;
-    FLASH->CR |= FLASH_CR_PER; // erase mode
-    for (uint8_t i = 0; i < CONFIG_PAGE_COUNT; i++) {
-            FLASH->AR = CONFIG_ADDRESS + (CONFIG_PAGE_SIZE * i);
-            FLASH->CR |= FLASH_CR_STRT; // start erase
-            while (FLASH->SR & FLASH_SR_BSY)
-                    ;
-            if (!(FLASH->SR & FLASH_SR_EOP)) {
-                    FLASH->CR &= ~FLASH_CR_PER;
-                    return;
-            } else
-                    FLASH->SR |= FLASH_SR_EOP;
-    }
-    FLASH->CR &= ~FLASH_CR_PER;
-    */
+    erase();
 }
 
 /**
@@ -275,9 +224,6 @@ void ConfigWrite(void) {
     write(CONFIG_MODE_UART2, Uart2.defaultMode);
 
     write(CONFIG_FLAG, CONFIG_FLAG_WRITTEN);
-
-    // FLASH->CR &= ~FLASH_CR_PG;
-    // FLASH->CR |= FLASH_CR_LOCK;
 }
 
 uint8_t ConfigRead(void) {

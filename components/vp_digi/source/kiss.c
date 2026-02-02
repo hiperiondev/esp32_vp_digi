@@ -30,9 +30,7 @@
 #include "digipeater.h"
 #include "kiss.h"
 #include "vp_digi_options.h"
-
-#define __disable_irq()
-#define __enable_irq()
+#include "system_port.h"
 
 void KissSend(Uart *port, uint8_t *buf, uint16_t size) {
     if (port->mode == MODE_KISS) {

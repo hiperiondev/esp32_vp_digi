@@ -23,28 +23,21 @@
  *
  */
 
-#include "systick.h"
-#include "system_port.h"
-#include "vp_digi_options.h"
+#ifndef SYSTEM_PORT_H_
+#define SYSTEM_PORT_H_
 
-volatile uint32_t ticks = 0; // SysTick counter
+#include <stdint.h>
 
-// with HAL enabled, the handler is in stm32f1xx_it.c
-// void SysTick_Handler(void)
-//{
-// ticks++;
-//}
+#define __enable_irq()
+#define __disable_irq()
 
-void SysTickInit(void) {
-    SysTickInit_port();
-}
+#define CDC_Transmit_FS(a, b)
+#define NVIC_SetPriority(a, b)
+#define NVIC_EnableIRQ(a)
+#define NVIC_DisableIRQ(a)
+#define NVIC_SystemReset(a)
 
-uint32_t SysTickGet(void) {
-    return SysTickGet_port();
-}
+void SysTickInit_port(void);
+uint32_t SysTickGet_port(void);
 
-void Delay(uint32_t ms) {
-    uint32_t target = SysTickGet() + ms / SYSTICK_INTERVAL;
-    while (target > SysTickGet())
-        ;
-}
+#endif /* SYSTEM_PORT_H_ */

@@ -27,13 +27,11 @@
 #include <systick.h>
 
 #include "kiss.h"
+#include "system_port.h"
 #include "terminal.h"
 #include "uart.h"
 #include "uart_port.h"
 #include "vp_digi_options.h"
-
-#define __disable_irq()
-#define __enable_irq()
 
 Uart Uart1 = { .defaultMode = MODE_KISS }, Uart2 = { .defaultMode = MODE_KISS }, UartUsb = { .defaultMode = MODE_KISS };
 
@@ -88,7 +86,7 @@ void UartSendByte(Uart *port, uint8_t data) {
         return;
 
     if (port->isUsb) {
-        // CDC_Transmit_FS(&data, 1);
+        CDC_Transmit_FS(&data, 1);
     } else {
         while (port->txBufferFull)
             ;
@@ -162,12 +160,12 @@ void UartConfig(Uart *port, uint8_t state) {
             UART_LL_DISABLE(port->port);
         }
 
-        // NVIC_SetPriority(UART_LL_UART1_IRQ, 2);
+        NVIC_SetPriority(UART_LL_UART1_IRQ, 2);
         if (state) {
-            // NVIC_EnableIRQ(UART_LL_UART1_IRQ);
+            NVIC_EnableIRQ(UART_LL_UART1_IRQ);
         } else {
         }
-        // NVIC_DisableIRQ(UART_LL_UART1_IRQ);
+        NVIC_DisableIRQ(UART_LL_UART1_IRQ);
 
         port->enabled = state > 0;
         port->isUsb = 0;
@@ -180,13 +178,12 @@ void UartConfig(Uart *port, uint8_t state) {
             UART_LL_DISABLE(port->port);
         }
 
-        // NVIC_SetPriority(UART_LL_UART2_IRQ, 2);
+        NVIC_SetPriority(UART_LL_UART2_IRQ, 2);
         if (state) {
+            NVIC_EnableIRQ(UART_LL_UART2_IRQ);
+        } else {
         }
-        // NVIC_EnableIRQ(UART_LL_UART2_IRQ);
-        else {
-        }
-        // NVIC_DisableIRQ(UART_LL_UART2_IRQ);
+        NVIC_DisableIRQ(UART_LL_UART2_IRQ);
 
         port->enabled = state > 0;
         port->isUsb = 0;

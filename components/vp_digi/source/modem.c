@@ -32,6 +32,7 @@
 #include "modem.h"
 #include "modem_port.h"
 #include "vp_digi_options.h"
+#include "system_port.h"
 
 /*
  * Configuration for PLL-based data carrier detection
@@ -338,8 +339,7 @@ void MODEM_LL_DAC_INTERRUPT_HANDLER(void) {
 /**
  * @brief ISR for baudrate generator timer. NRZI encoding is done here.
  */
-// void MODEM_LL_BAUDRATE_TIMER_INTERRUPT_HANDLER(void)
-// __attribute__((interrupt));
+// void MODEM_LL_BAUDRATE_TIMER_INTERRUPT_HANDLER(void) __attribute__((interrupt));
 void MODEM_LL_BAUDRATE_TIMER_INTERRUPT_HANDLER(void) {
     MODEM_LL_BAUDRATE_TIMER_CLEAR_INTERRUPT_FLAG();
 
@@ -544,13 +544,13 @@ void ModemTxTestStart(enum ModemTxTestMode type) {
     MODEM_LL_ADC_TIMER_DISABLE();
     MODEM_LL_DAC_TIMER_ENABLE();
 
-    // NVIC_DisableIRQ(MODEM_LL_DMA_IRQ);
-    // NVIC_EnableIRQ(MODEM_LL_DAC_IRQ);
+    NVIC_DisableIRQ(MODEM_LL_DMA_IRQ);
+    NVIC_EnableIRQ(MODEM_LL_DAC_IRQ);
 
     if (ModemConfig.modem == MODEM_9600) {
         MODEM_LL_DAC_TIMER_SET_RELOAD_VALUE(markStep);
         MODEM_LL_BAUDRATE_TIMER_ENABLE();
-        // NVIC_EnableIRQ(MODEM_LL_BAUDRATE_TIMER_IRQ);
+        NVIC_EnableIRQ(MODEM_LL_BAUDRATE_TIMER_IRQ);
         return;
     }
 
@@ -561,7 +561,7 @@ void ModemTxTestStart(enum ModemTxTestMode type) {
     } else // alternating tones
     {
         MODEM_LL_BAUDRATE_TIMER_ENABLE();
-        // NVIC_EnableIRQ(MODEM_LL_BAUDRATE_TIMER_IRQ); // enable interrupt in
+        NVIC_EnableIRQ(MODEM_LL_BAUDRATE_TIMER_IRQ); // enable interrupt in
         // NVIC
     }
 }
@@ -573,9 +573,9 @@ void ModemTxTestStop(void) {
     MODEM_LL_DAC_TIMER_DISABLE(); // disable DAC timer
     MODEM_LL_ADC_TIMER_ENABLE();  // enable RX timer
 
-    // NVIC_DisableIRQ(MODEM_LL_BAUDRATE_TIMER_IRQ);
-    // NVIC_DisableIRQ(MODEM_LL_DAC_IRQ);
-    // NVIC_EnableIRQ(MODEM_LL_DMA_IRQ);
+    NVIC_DisableIRQ(MODEM_LL_BAUDRATE_TIMER_IRQ);
+    NVIC_DisableIRQ(MODEM_LL_DAC_IRQ);
+    NVIC_EnableIRQ(MODEM_LL_DMA_IRQ);
 
     setPtt(false); // PTT off
 }
@@ -590,9 +590,9 @@ void ModemTransmitStart(void) {
     MODEM_LL_DAC_TIMER_ENABLE();
     MODEM_LL_ADC_TIMER_DISABLE();
 
-    // NVIC_DisableIRQ(MODEM_LL_DMA_IRQ);
-    // NVIC_EnableIRQ(MODEM_LL_DAC_IRQ);
-    // NVIC_EnableIRQ(MODEM_LL_BAUDRATE_TIMER_IRQ);
+    NVIC_DisableIRQ(MODEM_LL_DMA_IRQ);
+    NVIC_EnableIRQ(MODEM_LL_DAC_IRQ);
+    NVIC_EnableIRQ(MODEM_LL_BAUDRATE_TIMER_IRQ);
 }
 
 /**
@@ -603,9 +603,9 @@ void ModemTransmitStop(void) {
     MODEM_LL_DAC_TIMER_DISABLE();
     MODEM_LL_BAUDRATE_TIMER_DISABLE();
 
-    // NVIC_DisableIRQ(MODEM_LL_DAC_IRQ);
-    // NVIC_DisableIRQ(MODEM_LL_BAUDRATE_TIMER_IRQ);
-    // NVIC_EnableIRQ(MODEM_LL_DMA_IRQ);
+    NVIC_DisableIRQ(MODEM_LL_DAC_IRQ);
+    NVIC_DisableIRQ(MODEM_LL_BAUDRATE_TIMER_IRQ);
+    NVIC_EnableIRQ(MODEM_LL_DMA_IRQ);
 
     setPtt(false);
 }
@@ -636,7 +636,7 @@ void ModemInit(void) {
 
     MODEM_LL_INITIALIZE_DMA(samples);
 
-    // NVIC_EnableIRQ(MODEM_LL_DMA_IRQ);
+    NVIC_EnableIRQ(MODEM_LL_DMA_IRQ);
 
     MODEM_LL_ADC_TIMER_INITIALIZE();
 
@@ -659,8 +659,8 @@ void ModemInit(void) {
         )
             demodCount = 1;
         else
-
             demodCount = 2;
+
         N = N1200;
         baudRate = 1200.f;
 
